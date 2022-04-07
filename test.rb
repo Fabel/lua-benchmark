@@ -1,5 +1,5 @@
 require 'rufus-lua'
-require 'benchmark'Screenshot 2022-04-07 at 21.15.22.png
+require 'benchmark'
 require 'pry'
 require 'keisan'
 
