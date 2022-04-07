@@ -1,5 +1,5 @@
 require 'rufus-lua'
-require 'benchmark'Screenshot 2022-04-07 at 21.15.22.png
+require 'benchmark'
 require 'pry'
 require 'keisan'
 
@@ -24,11 +24,23 @@ calculator = Keisan::Calculator.new
 #   require=nil
 # })
 
+y = 2
 
-Benchmark.bm(7) do |x|
-  x.report('ruby') { n.times { a = 1 + 1 } }
-  x.report('lua') { n.times { lua.eval('a = 1 + 1')} }
-  x.report('keisan') { n.times { calculator.evaluate("a = 1 + 1")} }
+Benchmark.bm(7) do |bm|
+  bm.report('ruby') { n.times {
+    x = 10*y
+    a = 3*x + 1
+  } }
+  bm.report('lua') { n.times {
+    lua.eval(%{
+      x = 10 * #{y}
+      a = x*3 + 1
+    })}
+  }
+  bm.report('keisan') { n.times {
+    calculator.evaluate("x = 10*y", y: y)}
+    calculator.evaluate("a = 3*x + 1")
+  }
 end
 
 lua.close
