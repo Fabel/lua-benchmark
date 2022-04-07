@@ -26,20 +26,37 @@ calculator = Keisan::Calculator.new
 
 y = 2
 
-Benchmark.bm(7) do |bm|
+Benchmark.bm(12) do |bm|
   bm.report('ruby') { n.times {
     x = 10*y
     a = 3*x + 1
   } }
   bm.report('lua') { n.times {
     lua.eval(%{
-      x = 10 * #{y}
+      x = 10 * 2
       a = x*3 + 1
     })}
+  }
+  bm.report('lua func') {
+    f = lua.eval(%{
+      return function (y)
+        x = 10 * y
+        return x*3 + 1
+      end
+    })
+    n.times {
+      f.call(y)
+    }
   }
   bm.report('keisan') { n.times {
     calculator.evaluate("x = 10*y", y: y)}
     calculator.evaluate("a = 3*x + 1")
+  }
+  bm.report('keisan func') {
+    calculator.evaluate('f(y) = {x = 10*y;3*x + 1}')
+    n.times {
+      calculator.evaluate("f(y)", y: y)
+    }
   }
 end
 
